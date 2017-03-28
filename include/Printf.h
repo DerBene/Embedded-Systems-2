@@ -1,0 +1,8 @@
+//
+// Created by root on 28.03.17.
+//
+
+#ifndef EMBEDDED_SYSTEMS_2_PRINTF_H
+#define EMBEDDED_SYSTEMS_2_PRINTF_H
+
+#endif //EMBEDDED_SYSTEMS_2_PRINTF_H
