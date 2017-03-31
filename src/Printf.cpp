@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "../include/Printf.h"
 #define unsignedInt 'u'
 #define signedInt 'd'
@@ -8,12 +9,14 @@
 #define percent '&'
 
 char* Printf(char* dst, const void* end, const char* fmt, ...){
-    char* inputString = dst;
 
-    while(*inputString != '\0'){
-        if(*inputString == '%'){
-            inputString++;
-            switch(*inputString){
+    va_list vList;
+    va_start(vList, fmt);
+
+    while(*fmt && dst <= end-1){
+        if(*fmt == '%'){
+            fmt++;
+            switch(*fmt){
                 case unsignedInt :
                 {
                     //ToDo: Logic
@@ -26,12 +29,22 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
 
                 case singleChar :
                 {
-                    //ToDo: Logic
+                    char c = va_arg(vList, char);
+                    *dst = c;
+                    dst++;
                 }break;
 
                 case charChain :
                 {
-                    //ToDo: Logic
+                    char* c = va_arg(vList, char*);
+                    while(c)
+                    {
+                        *dst = *c;
+                        c++;
+                        dst++;
+                    }
+
+
                 }break;
 
                 case hex :
@@ -46,13 +59,26 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
 
                 case percent :
                 {
-                    //ToDo: Logic
+                    *dst = '%';
+                    dst++;
                 }break;
+
+                default :
+                {
+                    *dst = '%';
+                    dst++;
+                    *dst = *fmt;
+                    dst++;
+                }
             }
         }else{
-
+            *dst = *fmt;
+            dst++;
         }
-        inputString++;
+        fmt++;
     }
 
+    *dst = '\0';
+    dst++;
+    return dst;
 }
