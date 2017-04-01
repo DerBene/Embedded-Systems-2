@@ -1,4 +1,6 @@
-#include <stdio.h>
+
+#include <stdarg.h>
+#include <cstdio>
 #include "../include/Printf.h"
 #define unsignedInt 'u'
 #define signedInt 'd'
@@ -19,17 +21,35 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
             switch(*fmt){
                 case unsignedInt :
                 {
-                    //ToDo: Logic
+                    char* tempString = IntegerConvertion(va_arg(vList, unsigned int));
+                    while(*tempString){
+                        *dst = *tempString;
+                        dst++;
+                        tempString++;
+                    }
                 }break;
 
                 case signedInt :
                 {
-                    //ToDo: Logic
+                    signed int tmp = va_arg(vList, signed int);
+                    unsigned uTmp = 0;
+                    if(tmp < 0)
+                    {
+                        uTmp = (unsigned) ~tmp +1;
+                    }
+
+                    char* tempString = IntegerConvertion(uTmp);
+                    *dst = '-';
+                    while(*tempString){
+                        *dst = *tempString;
+                        dst++;
+                        tempString++;
+                    }
                 }break;
 
                 case singleChar :
                 {
-                    char c = va_arg(vList, char);
+                    char c = (char) va_arg(vList, int);
                     *dst = c;
                     dst++;
                 }break;
@@ -37,7 +57,7 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
                 case charChain :
                 {
                     char* c = va_arg(vList, char*);
-                    while(c)
+                    while(*c)
                     {
                         *dst = *c;
                         c++;
@@ -49,12 +69,28 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
 
                 case hex :
                 {
-                    //ToDo: Logic
+                    int inputInt = va_arg(vList, int);
+                    *dst = '0';
+                    *dst = 'x';
+                    //ToDo: Logic with shift operator <<
                 }break;
 
                 case bin :
                 {
-                    //ToDo: Logic
+                    unsigned int inputInt = va_arg(vList, unsigned int);
+                    *dst = '0';
+                    *dst = 'b';
+
+                    for(int bitIndex = 8*sizeof(inputInt)-1; bitIndex >= 0; bitIndex--)
+                    {
+                        *dst = (inputInt & (1<<bitIndex)) ? '1' : '0';
+
+                        printf(dst);
+                        dst++;
+                    }
+
+
+
                 }break;
 
                 case percent :
@@ -81,4 +117,21 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
     *dst = '\0';
     dst++;
     return dst;
+}
+
+char* IntegerConvertion(unsigned int toConvert){
+    char convertedInt[8*sizeof(toConvert)];
+    char* filledArrayPointer = (convertedInt +(8*sizeof(toConvert)));
+    *filledArrayPointer = '\0';
+    filledArrayPointer--;
+
+    while(toConvert > 0)
+    {
+        *filledArrayPointer = toConvert%10 + '0';
+        toConvert = toConvert/10;
+        filledArrayPointer--;
+    }
+
+    filledArrayPointer++;
+    return filledArrayPointer;
 }
