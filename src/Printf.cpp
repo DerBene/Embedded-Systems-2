@@ -36,10 +36,12 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
                     if(tmp < 0)
                     {
                         uTmp = (unsigned) ~tmp +1;
+
+                        *dst = '-';
+                        dst++;
                     }
 
                     char* tempString = IntegerConvertion(uTmp);
-                    *dst = '-';
                     while(*tempString){
                         *dst = *tempString;
                         dst++;
@@ -67,25 +69,37 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
 
                 }break;
 
-                case hex :
-                {
-                    int inputInt = va_arg(vList, int);
-                    *dst = '0';
-                    *dst = 'x';
-                    //ToDo: Logic with shift operator <<
-                }break;
-
-                case bin :
+                case hex ://TODO: delete leading 0
                 {
                     unsigned int inputInt = va_arg(vList, unsigned int);
                     *dst = '0';
+                    dst++;
+                    *dst = 'x';
+                    dst++;
+                    char hexHolder = 0;
+
+                    for(int bitIndex = 8*sizeof(inputInt)-1; bitIndex >= 0; bitIndex--)
+                    {
+
+                        hexHolder = inputInt & (4<<bitIndex);
+                        *dst = hexHolder + (hexHolder < 10 ? '0' : ('A'-10));
+
+                        dst++;
+                    }
+                }break;
+
+                case bin ://TODO: delete leading 0
+                {
+                    unsigned int inputInt = va_arg(vList, unsigned int);
+                    *dst = '0';
+                    dst++;
                     *dst = 'b';
+                    dst++;
 
                     for(int bitIndex = 8*sizeof(inputInt)-1; bitIndex >= 0; bitIndex--)
                     {
                         *dst = (inputInt & (1<<bitIndex)) ? '1' : '0';
 
-                        printf(dst);
                         dst++;
                     }
 
