@@ -69,9 +69,11 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
 
                 }break;
 
-                case hex ://TODO: delete leading 0
+                case hex ://TODO: delete leading 0 and fix
                 {
                     unsigned int inputInt = va_arg(vList, unsigned int);
+                    bool nullTest = false;
+                    char hexOut;
                     *dst = '0';
                     dst++;
                     *dst = 'x';
@@ -91,6 +93,8 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
                 case bin ://TODO: delete leading 0
                 {
                     unsigned int inputInt = va_arg(vList, unsigned int);
+                    bool nullTest = false;
+                    char binOut;
                     *dst = '0';
                     dst++;
                     *dst = 'b';
@@ -98,9 +102,16 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
 
                     for(int bitIndex = 8*sizeof(inputInt)-1; bitIndex >= 0; bitIndex--)
                     {
-                        *dst = (inputInt & (1<<bitIndex)) ? '1' : '0';
+                        binOut = (inputInt & (1<<bitIndex)) ? '1' : '0';
+                        if(binOut == '1'){
+                            nullTest = true;
+                        }
+                        if(nullTest)
+                        {
+                            *dst = binOut;
+                            dst++;
+                        }
 
-                        dst++;
                     }
 
 
