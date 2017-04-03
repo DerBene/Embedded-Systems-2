@@ -1,7 +1,7 @@
 # Don't change!!!
 CXX=g++
 CXXFLAGS=-Werror -Wall -Wextra -fno-exceptions -Wno-format -fno-rtti -std=c++1y
-OUTPUT=bin
+OUTPUT=BIN_VALUE
 
 CURL_OPTIONS=-u $(USER):$(PASSWORD) -X POST -F 'speicherung=$(ICH_STIMME_DER_SPEICHERUNG_DER_DATE_ZU)'
 

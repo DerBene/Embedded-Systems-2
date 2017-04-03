@@ -2,24 +2,24 @@
 #include <stdarg.h>
 #include <cstdio>
 #include "../include/Printf.h"
-#define unsignedInt 'u'
-#define signedInt 'd'
-#define singleChar 'c'
-#define charChain 's'
-#define hex 'x'
-#define bin 'b'
-#define percent '&'
+#define UNSIGNED_INT 'u'
+#define SIGNED_INT 'd'
+#define SINGLE_CHAR 'c'
+#define STRING 's'
+#define HEX_VALUE 'x'
+#define BIN_VALUE 'b'
+#define PERCENT '%'
 
 char* Printf(char* dst, const void* end, const char* fmt, ...){
 
     va_list vList;
     va_start(vList, fmt);
 
-    while(*fmt && dst <= end-1){
+    while(*fmt && dst <= end){
         if(*fmt == '%'){
             fmt++;
             switch(*fmt){
-                case unsignedInt :
+                case UNSIGNED_INT :
                 {
                     char* tempString = IntegerConvertion(va_arg(vList, unsigned int));
                     while(*tempString){
@@ -29,7 +29,7 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
                     }
                 }break;
 
-                case signedInt :
+                case SIGNED_INT :
                 {
                     signed int tmp = va_arg(vList, signed int);
                     unsigned uTmp = 0;
@@ -49,14 +49,14 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
                     }
                 }break;
 
-                case singleChar :
+                case SINGLE_CHAR :
                 {
                     char c = (char) va_arg(vList, int);
                     *dst = c;
                     dst++;
                 }break;
 
-                case charChain :
+                case STRING :
                 {
                     char* c = va_arg(vList, char*);
                     while(*c)
@@ -69,11 +69,11 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
 
                 }break;
 
-                case hex ://TODO: delete leading 0 and fix
+                case HEX_VALUE ://TODO: delete leading 0 and fix
                 {
                     unsigned int inputInt = va_arg(vList, unsigned int);
-                    bool nullTest = false;
-                    char hexOut;
+                    //bool nullTest = false;
+                    //char hexOut;
                     *dst = '0';
                     dst++;
                     *dst = 'x';
@@ -90,7 +90,7 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
                     }
                 }break;
 
-                case bin ://TODO: delete leading 0
+                case BIN_VALUE ://TODO: delete leading 0
                 {
                     unsigned int inputInt = va_arg(vList, unsigned int);
                     bool nullTest = false;
@@ -118,7 +118,7 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
 
                 }break;
 
-                case percent :
+                case PERCENT :
                 {
                     *dst = '%';
                     dst++;
