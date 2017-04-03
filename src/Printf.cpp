@@ -15,18 +15,15 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
     va_list vList;
     va_start(vList, fmt);
 
+    //Runs until end is reached or there is no more input
     while(*fmt && dst <= end){
         if(*fmt == '%'){
             fmt++;
             switch(*fmt){
                 case UNSIGNED_INT :
                 {
-                    char* tempString = IntegerConvertion(va_arg(vList, unsigned int));
-                    while(*tempString){
-                        *dst = *tempString;
-                        dst++;
-                        tempString++;
-                    }
+                    dst = IntegerConvertion(dst, va_arg(vList, unsigned int));
+
                 }break;
 
                 case SIGNED_INT :
@@ -41,12 +38,8 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
                         dst++;
                     }
 
-                    char* tempString = IntegerConvertion(uTmp);
-                    while(*tempString){
-                        *dst = *tempString;
-                        dst++;
-                        tempString++;
-                    }
+                    dst = IntegerConvertion(dst,uTmp);
+
                 }break;
 
                 case SINGLE_CHAR :
@@ -69,7 +62,7 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
 
                 }break;
 
-                case HEX_VALUE ://TODO: delete leading 0 and fix
+                case HEX_VALUE :
                 {
                     unsigned int inputInt = va_arg(vList, unsigned int);
                     //bool nullTest = false;
@@ -82,15 +75,12 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
 
                     for(int bitIndex = 8*sizeof(inputInt)-1; bitIndex >= 0; bitIndex--)
                     {
-
-                        hexHolder = inputInt & (4<<bitIndex);
-                        *dst = hexHolder + (hexHolder < 10 ? '0' : ('A'-10));
-
-                        dst++;
+                        //*dst = hexHolder + (hexHolder < 10 ? '0' : ('a'-10));
+                        //dst++;
                     }
                 }break;
 
-                case BIN_VALUE ://TODO: delete leading 0
+                case BIN_VALUE :
                 {
                     unsigned int inputInt = va_arg(vList, unsigned int);
                     bool nullTest = false;
@@ -144,7 +134,10 @@ char* Printf(char* dst, const void* end, const char* fmt, ...){
     return dst;
 }
 
-char* IntegerConvertion(unsigned int toConvert){
+/*
+ * Converts unsigned Integer to ASCII
+ */
+char* IntegerConvertion(char* dst, unsigned int toConvert){
     char convertedInt[8*sizeof(toConvert)];
     char* filledArrayPointer = (convertedInt +(8*sizeof(toConvert)));
     *filledArrayPointer = '\0';
@@ -158,5 +151,11 @@ char* IntegerConvertion(unsigned int toConvert){
     }
 
     filledArrayPointer++;
-    return filledArrayPointer;
+
+    while(*filledArrayPointer){
+        *dst = *filledArrayPointer;
+        dst++;
+        filledArrayPointer++;
+    }
+    return dst;
 }
